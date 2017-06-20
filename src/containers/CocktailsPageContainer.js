@@ -12,9 +12,13 @@ class CocktailsPageContainer extends Component {
   }
 
   componentDidMount(){
-    fetch('http://localhost:3000/api/v1/cocktails')
-      .then(res => res.json() )
-      .then( cocktails => this.setState({cocktails: cocktails}))
+    if (!localStorage.getItem('user_id')){
+      this.props.history.push('/login')
+    } else {
+      fetch('http://localhost:3000/api/v1/cocktails')
+        .then(res => res.json() )
+        .then( cocktails => this.setState({cocktails: cocktails}))
+    }
   }
 
   render(){
