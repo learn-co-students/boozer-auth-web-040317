@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 
 import CocktailsPage from '../components/CocktailsPage'
 
+import withAuth from '../hocs/withAuth'
+
 class CocktailsPageContainer extends Component {
 
   constructor(){
@@ -24,4 +26,4 @@ class CocktailsPageContainer extends Component {
   }
 }
 
-export default CocktailsPageContainer
+export default withAuth(CocktailsPageContainer)
