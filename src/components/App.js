@@ -16,6 +16,7 @@ class App extends Component {
     }
     this.login = this.login.bind(this)
     this.logout = this.logout.bind(this)
+    this.loggedInDisplay = this.loggedInDisplay.bind(this)
   }
 
   componentDidMount(){
@@ -34,7 +35,7 @@ class App extends Component {
     }
   }
 
-  login(loginParams){
+  login(loginParams, history){
     AuthAdapter.login(loginParams)
       .then(user => {
         if (!user.error) {
@@ -45,6 +46,7 @@ class App extends Component {
             }
           })
           localStorage.setItem('jwt', user.jwt)
+          history.push('/')
         }
       })
   }
@@ -60,15 +62,31 @@ class App extends Component {
     })
   }
 
+  loggedInDisplay(){
+    if (this.state.auth.isLoggedIn) {
+      return (
+        <div>
+          <Link to='/cocktails'>See All Cocktails</Link><br/>
+          <Link to='/logout'>Logout</Link><br/>
+        </div>
+      )
+    } else {
+      return (
+        <div>
+          <Link to='/login'>Login</Link><br/>
+          <Route path='/login' render={(routerProps) => <LoginForm onSubmit={this.login} routerProps={routerProps} />} /><br/>
+        </div>
+      )
+    }
+  }
+
   render() {
     return (
       <div className="App">
         <div className="App-header">
-          <h2>Welcome to Boozer</h2>
-          {this.state.auth.isLoggedIn ? <Link to='/cocktails'>See All Cocktails</Link> : null}<br />
-          {this.state.auth.isLoggedIn ? <Link to='/logout'>Logout</Link> : <Link to='/login'>Login</Link>}<br />
+          <h2>Welcome to Boozer{this.state.auth.isLoggedIn ? `, ${this.state.auth.user.username}` : null}</h2>
+          {this.loggedInDisplay()}
           <Link to='/'>Home</Link><br/>
-          <Route path='/login' render={() => <LoginForm onSubmit={this.login} />} />
           <Route path='/logout' render={(routerProps) => <div>{this.logout(routerProps)}</div> } />
         </div>
         <Route path="/cocktails" component={CocktailsPageContainer} />
