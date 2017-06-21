@@ -51,9 +51,8 @@ class App extends Component {
       })
   }
 
-  logout(routerProps){
+  logout(){
     localStorage.clear()
-    routerProps.history.push('/')
     this.setState({
       auth: {
         isLoggedIn: false,
@@ -67,7 +66,7 @@ class App extends Component {
       return (
         <div>
           <Link to='/cocktails'>See All Cocktails</Link><br/>
-          <Link to='/logout'>Logout</Link><br/>
+          <Link to='/' onClick={this.logout}>Logout</Link><br/>
         </div>
       )
     } else {
@@ -87,7 +86,6 @@ class App extends Component {
           <h2>Welcome to Boozer{this.state.auth.isLoggedIn ? `, ${this.state.auth.user.username}` : null}</h2>
           {this.loggedInDisplay()}
           <Link to='/'>Home</Link><br/>
-          <Route path='/logout' render={(routerProps) => <div>{this.logout(routerProps)}</div> } />
         </div>
         <Route path="/cocktails" component={CocktailsPageContainer} />
       </div>
