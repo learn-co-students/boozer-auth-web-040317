@@ -12,12 +12,14 @@ class CocktailsPageContainer extends Component {
   }
 
   componentDidMount(){
-    if (localStorage.getItem('user_id')) {
+
+    if (localStorage.getItem('jwt')) {
       fetch('http://localhost:3000/api/v1/cocktails')
       .then(res => res.json() )
       .then( cocktails => this.setState({cocktails: cocktails.slice(0,30)}))
     }
     else{
+      console.log(this.props)
       this.props.history.push("/login")
     }
   }

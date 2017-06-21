@@ -26,13 +26,20 @@ class LoginForm extends Component {
 
   render(){
     return (
+      <div className="form-group">
       <form onSubmit={this.handleSubmit}>
         <label>Username</label>
-        <input type='text' value={this.state.username} name="username" onChange={this.handleChange}/>
+        <input className="form-control" type='text' value={this.state.username} name="username" onChange={this.handleChange}/>
         <label>Password</label>
-        <input type='password' value={this.state.password} name="password" onChange={this.handleChange}/>
-        <input type="submit" />
+        <input type='password' className="form-control" value={this.state.password} name="password" onChange={this.handleChange}/>
+        <br></br>
+        <input className="btn btn-primary btn-lg btn-block" type="submit" value="Log me in!" />
       </form>
+
+  </div>
+
+
+
     )
   }
 }

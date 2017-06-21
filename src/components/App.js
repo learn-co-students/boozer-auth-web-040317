@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
-import { Route, Link } from 'react-router-dom'
+import { Route, Link} from 'react-router-dom'
+
 
 import CocktailsPageContainer from '../containers/CocktailsPageContainer'
-
+import Navbar from './navbar'
 import LoginForm from './LoginForm'
+import Welcome from './welcome'
 import { AuthAdapter } from '../adapters'
 
 class App extends Component {
-    constructor(){
-    super()
+    constructor(props){
+    super(props)
     this.state = {
       auth: {
         isLoggedIn: false,
@@ -26,13 +28,26 @@ class App extends Component {
           this.setState({
             auth: { isLoggedIn: true, user: user}
           })
-          localStorage.setItem('user_id', user.id )
+          localStorage.setItem('jwt', user.jwt )
+          this.props.history.push("/cocktails")
+
         }
       })
   }
 
+  logOut(event){
+
+    localStorage.clear()
+    this.setState({
+      auth: {
+        isLoggedIn: false,
+        user: {}
+      }
+    })
+  }
+
   componentDidMount(){
-    if (localStorage.getItem('user_id')) {
+    if (localStorage.getItem('jwt')) {
       AuthAdapter.currentUser()
         .then(user => {
           this.setState({
@@ -49,28 +64,21 @@ class App extends Component {
 
 
   render() {
-    if (this.state.auth.isLoggedIn) {
-      // title = this.state.auth.user.username
-      alert("sup")
-
-    } else {
-    }
-
 
 
     return (
-      <div className="App">
+
+      <div className="container">
+        <Navbar logout={this.logOut.bind(this)}/>
         <div className="App-header">
-          <h2>Welcome to Boozer</h2>
-          <Link to='/cocktails'>See All Cocktails</Link>
-          <br></br>
-          <Link to='/'>Home</Link>
-          <br></br>
-          <Link to='/login'>LOG-IN</Link>
+
         </div>
+        <Route exact path="/" component={Welcome} />
         <Route path="/cocktails" component={CocktailsPageContainer} />
         <Route path='/login' render={() => <LoginForm onSubmit={this.logIn}/>} />
+
       </div>
+
     );
   }
 }
