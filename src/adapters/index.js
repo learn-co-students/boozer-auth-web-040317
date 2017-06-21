@@ -23,6 +23,6 @@ export class AuthAdapter {
     return{
       'content-type': 'application/json',
       'accept': 'application/json',
-      'Authorization': localStorage.getItem('user_id')
+      'Authorization': localStorage.getItem('jwt')
     }
   }

@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 
 import CocktailsPage from '../components/CocktailsPage'
+import withAuth from '../hocs/withAuth'
 
 class CocktailsPageContainer extends Component {
 
@@ -12,13 +13,9 @@ class CocktailsPageContainer extends Component {
   }
 
   componentDidMount(){
-    if (!localStorage.getItem('user_id')){
-      this.props.history.push('/login')
-    } else {
       fetch('http://localhost:3000/api/v1/cocktails')
         .then(res => res.json() )
         .then( cocktails => this.setState({cocktails: cocktails}))
-    }
   }
 
   render(){
@@ -28,4 +25,4 @@ class CocktailsPageContainer extends Component {
   }
 }
 
-export default CocktailsPageContainer
+export default withAuth(CocktailsPageContainer)

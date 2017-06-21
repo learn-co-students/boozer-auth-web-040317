@@ -16,6 +16,7 @@ class App extends Component {
       }
     }
     this.logIn = this.logIn.bind(this)
+    this.logOut = this.logOut.bind(this)
   }
 
   logIn(loginParams){
@@ -28,13 +29,20 @@ class App extends Component {
             user: user
           }
         })
-      localStorage.setItem('user_id', user.id)
+      localStorage.setItem('jwt', user.jwt)
       }
     })
   }
 
+  logOut(){
+    this.setState({
+      auth: { isLoggedIn: false, user: {} }
+    })
+    localStorage.clear()
+  }
+
   componentDidMount(){
-    if (localStorage.getItem('user_id')){
+    if (localStorage.getItem('jwt')){
       AuthAdapter.currentUser()
       .then(user => {
         this.setState({
@@ -59,6 +67,7 @@ class App extends Component {
           <Link to='/'>Home</Link>
           <Link to='/login'>Log In</Link>
           <Route path='/login' render={() => < LoginForm onSubmit={this.logIn}/>} />
+          <button onClick={this.logOut}>Log Out</button>
         </div>
         <Route path="/cocktails" component={CocktailsPageContainer} />
       </div>
