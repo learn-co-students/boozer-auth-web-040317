@@ -3,9 +3,18 @@ import React from 'react'
 function CocktailsPage(props){
   return (
     <div>
-      <h1>Cocktails</h1>
       <div>
-        { props.cocktails.map( c => <p key={c.id}>{c.name}</p>) }
+      <table className="table table-striped table-hover ">
+  <thead>
+    <tr>
+
+      <th><h1>Cocktails</h1></th>
+      </tr>
+  </thead>
+  <tbody>
+        { props.cocktails.map( c => <tr key={c.id}><td >{c.name}</td></tr>) }
+  </tbody>
+  </table>
       </div>
     </div>
   )
