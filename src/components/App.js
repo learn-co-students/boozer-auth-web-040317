@@ -1,8 +1,10 @@
-import React, { Component } from 'react';
-import { Route, Link } from 'react-router-dom'
+import React, {Component} from 'react';
+import {Route, Link, withRouter} from 'react-router-dom'
 
 import CocktailsPageContainer from '../containers/CocktailsPageContainer'
 import LoginForm from './LoginForm'
+import withAuth from '../hocs/withAuth'
+import {AuthAdapter} from '../adapters'
 
 class App extends Component {
   constructor() {
@@ -17,48 +19,42 @@ class App extends Component {
     this.logIn = this.logIn.bind(this)
   }
 
-componentDidMount() {
-  if(localStorage.getItem('user_id')) {
-    fetch('http://localhost:3000/api/v1/current_user', {
-      headers: {
-        'content-type': 'application/json',
-        'accept': 'application/json',
-        'Authorization': localStorage.getItem('user_id')
-      }
-    })
-    .then(res => res.json())
-    .then(user => this.setState({
-      auth: {
-        isLoggedIn: true,
-        user: user
-      }
-    }))
-  }
-}
-
-logIn(loginParms) {
-  fetch('http://localhost:3000/api/v1/auth', {
-    method: 'POST',
-    headers: {
-      'content-type': 'application/json',
-      'accept': 'application/json',
-      'Authorization': localStorage.getItem('user_id')
-    },
-    body: JSON.stringify(loginParms)
-  }).then(res => res.json())
-  .then(user => {
-    if (!user.error) {
-      this.setState({
+  componentDidMount() {
+    if (localStorage.getItem('jwt')) {
+      AuthAdapter.currentUser().then(user => this.setState({
         auth: {
           isLoggedIn: true,
           user: user
         }
-      })
-      localStorage.setItem('user_id', user.id)
+      }))
     }
-  })
+  }
 
-}
+  logIn(loginParams) {
+    AuthAdapter.logIn(loginParams).then(user => {
+      if (!user.error) {
+        this.setState({
+          auth: {
+            isLoggedIn: true,
+            user: user
+          }
+        })
+        localStorage.setItem('jwt', user.jwt)
+      }
+    })
+  }
+
+  handleClick = e => {
+    e.preventDefault();
+    localStorage.clear()
+    this.setState({
+      auth: {
+        isLoggedIn: false,
+        user: {}
+      }
+    })
+  }
+
   render() {
     return (
       <div className="App">
@@ -67,12 +63,13 @@ logIn(loginParms) {
           <Link to='/cocktails'>See All Cocktails</Link>
           <Link to='/'>Home</Link>
           <Link to='/login'>Log In</Link>
+          <button onClick={this.handleClick}>Logout</button>
         </div>
-        <Route path="/cocktails" component={CocktailsPageContainer} />
-        <Route path="/login" render={() => <LoginForm onSubmit={this.logIn} />} />
+        <Route path="/cocktails" render={() => <CocktailsPageContainer loggedIn={this.state.auth.isLoggedIn}/>}/>
+        <Route path="/login" render={() => <LoginForm logIn={this.logIn}/>}/>
       </div>
     );
   }
 }
 
-export default App;
+export default withAuth(App);
