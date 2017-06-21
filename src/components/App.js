@@ -51,12 +51,9 @@ class App extends Component {
   render() {
     if (this.state.auth.isLoggedIn) {
       // title = this.state.auth.user.username
-      console.log("sup")
+      alert("sup")
 
     } else {
-      //  var stateObj = {foo: "bar"}
-      //  window.history.pushState(stateObj, "page 1", "login")
-      //  window.location.reload()
     }
 
 
